@@ -1,5 +1,5 @@
 from keras.layers import Convolution2D, MaxPooling2D, BatchNormalization
-from keras.layers import Input
+from keras.layers import Input, Flatten, Dense
 from keras.models import Model
 
 input_image_height = 384
@@ -27,8 +27,11 @@ def create_model():
     x = BatchNormalization()(x)
     x = MaxPooling2D(strides=(3, 3))(x)
 
-    x = Convolution2D(50, (4, 5), activation='relu')(x)
-    angle_out = Convolution2D(1, (1, 1), activation='linear', name='angle_out')(x)
+    x = Flatten()(x)
+
+    x = Dense(50, activation='relu')(x)
+    angle_out = Dense(1, activation='linear', name='angle_out')(x)
 
     model = Model(inputs=[image_in], outputs=[angle_out])
     model.compile(optimizer='adam', loss={'angle_out': 'mse'})
+    return model
