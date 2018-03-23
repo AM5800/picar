@@ -1,6 +1,6 @@
-from donkeycar.parts.datastore import TubHandler, TubGroup
-from model import create_model, input_image_height, input_image_width, input_image_channels
 import keras
+from donkeycar.parts.datastore import TubGroup
+from model import create_model
 
 verbose = 2
 train_split = .8
@@ -8,7 +8,7 @@ train_split = .8
 X_keys = ['cam/image_array']
 y_keys = ['user/angle']
 
-tubgroup = TubGroup("..\..\..\picar-sync\wide-36.6-day")
+tubgroup = TubGroup("..\..\..\picar_sync\wide-36.6-day,..\..\..\picar_sync\wide-36.6-evening-ccw-recovery")
 train_gen, val_gen = tubgroup.get_train_val_gen(X_keys, y_keys, batch_size=10, train_frac=train_split)
 
 save_best = keras.callbacks.ModelCheckpoint('model_{val_loss:.4f}.hdf5',
@@ -35,4 +35,3 @@ hist = model.fit_generator(
     validation_data=val_gen,
     validation_steps=steps_per_epoch * (1.0 - train_split),
     callbacks=[save_best, early_stop])
-
